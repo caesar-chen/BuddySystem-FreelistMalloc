@@ -1,6 +1,21 @@
+//Shizhe Chen
 #include <stdlib.h>
 #include "./list.h"
+#include "my_malloc.h"
 
+static NODE* create_node(int data);
+
+static NODE* create_node(int data)
+{
+    NODE* nd = (NODE*) my_malloc(sizeof(NODE));
+    if (nd == NULL) {
+      return NULL;
+    }
+    nd->prev = NULL;
+    nd->next = NULL;
+    nd->data = data;
+    return nd;
+}
 /**
  * pushFront
  * Takes in ptr to a list and data to add
@@ -8,7 +23,20 @@
  */
 void pushFront(LIST *list, int data)
 {
-	// your code here
+	NODE* newnode = create_node(data);
+    if (newnode == NULL) {
+      return;
+    }
+    newnode->next = list->head;
+    if (newnode->next != NULL) {
+      newnode->next->prev = newnode;
+    }
+    list->head = newnode;
+    list->size = list->size + 1;
+    if (list->size == 1)
+    {
+      list->tail = newnode;
+    }
 }
 
 /**
@@ -18,7 +46,20 @@ void pushFront(LIST *list, int data)
  */
 void pushBack(LIST *list, int data)
 {
-	// your code here
+	NODE* newnode = create_node(data);
+    if (newnode == NULL) {
+      return;
+    }
+    newnode->prev = list->tail;
+    if (newnode->prev != NULL) {
+      newnode->prev->next = newnode;
+    }
+    list->tail = newnode;
+    list->size = list->size + 1;
+    if (list->size == 1)
+    {
+      list->head = newnode;
+    }
 }
 
 /**
@@ -30,8 +71,25 @@ void pushBack(LIST *list, int data)
  */
 int popFront(LIST *list)
 {
-	// your code here
-	return 0;
+	if (list->size == 0)
+    {
+      return -1;
+    }
+    if (list->size == 1)
+    {
+      NODE* reme = list->head;
+      list->head = NULL;
+      list->tail = NULL;
+      list->size = 0;
+      my_free(reme);
+      return 0;
+    }
+    NODE* reme = list->head;
+    list->head = list->head->next;
+    list->head->prev = NULL;
+    list->size = list->size - 1;
+    my_free(reme);
+    return 0;
 }
 
 /**
@@ -43,8 +101,25 @@ int popFront(LIST *list)
  */
 int popBack(LIST *list)
 {
-	// your code here
-	return 0;
+	if (list->size == 0)
+    {
+      return -1;
+    }
+    if (list->size == 1)
+    {
+      NODE* reme = list->tail;
+      list->head = NULL;
+      list->tail = NULL;
+      list->size = 0;
+      my_free(reme);
+      return 0;
+    }
+    NODE* reme = list->tail;
+    list->tail = list->tail->prev;
+    list->tail->next = NULL;
+    list->size = list->size - 1;
+    my_free(reme);
+    return 0;
 }
 
 

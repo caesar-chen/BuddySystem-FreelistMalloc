@@ -1,5 +1,6 @@
+//Shizhe Chen
 #ifndef LIST_H
-#define LISTH
+#define LIST_H
 
 typedef struct node {
 	int data;
